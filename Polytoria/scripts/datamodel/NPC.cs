@@ -404,7 +404,10 @@ public partial class NPC : Physical
 	public bool IsOnCeiling => CharBody3D.IsOnCeiling();
 
 	[ScriptProperty] public float NavDestinationDistance => _navAgent == null ? Mathf.Inf : _navAgent.DistanceToTarget();
-	[ScriptProperty] public bool NavDestinationReached => _navAgent != null && _navAgent.IsTargetReached();
+
+	[ScriptProperty]
+	public bool NavDestinationReached { get; private set; } = false;
+
 	[ScriptProperty] public bool NavDestinationValid => _navAgent != null && _navAgent.IsTargetReachable();
 
 	public Vector3 CharacterVelocity = Vector3.Zero;
@@ -1078,6 +1081,7 @@ public partial class NPC : Physical
 			}
 
 			_navAgent.NavigationFinished += OnNavFinished;
+			NavDestinationReached = false;
 		}
 		_navAgent.TargetPosition = pos;
 	}
@@ -1086,6 +1090,7 @@ public partial class NPC : Physical
 	{
 		_navAgentContainer?.QueueFree();
 		_navAgent = null;
+		NavDestinationReached = true;
 		NavFinished.Invoke();
 	}
 
